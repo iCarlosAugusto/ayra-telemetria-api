@@ -8,8 +8,8 @@ services:
       MYSQL_DATABASE: traccar
       MYSQL_USER: traccar
       MYSQL_PASSWORD: traccar
-    volumes:
-      - /opt/traccar/data:/var/lib/mysql
+#    volumes:
+#      - /opt/traccar/data:/var/lib/mysql
 
   traccar:
     image: traccar/traccar:latest
@@ -41,8 +41,8 @@ services:
     ports:
       - "8082:8082"
       - "5000-5500:5000-5500"
-    volumes:
-      - /opt/traccar/logs:/opt/traccar/logs
+#    volumes:
+#      - /opt/traccar/logs:/opt/traccar/logs
 
   autoheal:
     image: willfarrell/autoheal:latest

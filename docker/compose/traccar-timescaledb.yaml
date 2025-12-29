@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: traccar
       TIMESCALEDB_TELEMETRY: "off"
     volumes:
-      - /opt/traccar/data:/var/lib/postgresql/data
+      - ./data/postgresql:/var/lib/postgresql/data
 
   traccar:
     image: traccar/traccar:latest
@@ -22,6 +22,10 @@ services:
       DATABASE_URL: jdbc:postgresql://database:5432/traccar
       DATABASE_USER: traccar
       DATABASE_PASSWORD: traccar
+      # Enable OsmAnd protocol for HTTP-based testing
+      OSMAND_PORT: "5055"
+      # Enable GPS103 protocol for TCP testing (TK103 devices)
+      GPS103_PORT: "5001"
     healthcheck:
       test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8082/api/health" ]
       interval: 2m
@@ -32,7 +36,7 @@ services:
       - "8082:8082"
       - "5000-5500:5000-5500"
     volumes:
-      - /opt/traccar/logs:/opt/traccar/logs
+      - ./data/logs:/opt/traccar/logs
 
   autoheal:
     image: willfarrell/autoheal:latest
