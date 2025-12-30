@@ -1,28 +1,28 @@
 services:
 
-  database:
-    image: timescale/timescaledb:latest-pg16
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: traccar
-      POSTGRES_USER: traccar
-      POSTGRES_PASSWORD: traccar
-      TIMESCALEDB_TELEMETRY: "off"
-    volumes:
-      - ./data/postgresql:/var/lib/postgresql/data
+  # database:
+  #   image: timescale/timescaledb:latest-pg16
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_DB: traccar
+  #     POSTGRES_USER: traccar
+  #     POSTGRES_PASSWORD: traccar
+  #     TIMESCALEDB_TELEMETRY: "off"
+  #   volumes:
+  #     - ./data/postgresql:/var/lib/postgresql/data
 
   traccar:
     build: .
     # image: traccar/traccar:latest
     restart: unless-stopped
-    depends_on:
-      - database
+    # depends_on:
+    #   - database
     environment:
       CONFIG_USE_ENVIRONMENT_VARIABLES: "true"
       DATABASE_DRIVER: org.postgresql.Driver
-      DATABASE_URL: jdbc:postgresql://database:5432/traccar
-      DATABASE_USER: traccar
-      DATABASE_PASSWORD: traccar
+      DATABASE_URL: jdbc:postgresql://aws-0-us-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true
+      DATABASE_USER: postgres.xspkeynlexpiyjzzoyul
+      DATABASE_PASSWORD: "0b9r!hUz2&IZ"
       # Enable OsmAnd protocol for HTTP-based testing
       OSMAND_PORT: "5055"
       # Enable GPS103 protocol for TCP testing (TK103 devices)
