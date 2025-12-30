@@ -39,25 +39,22 @@ COPY --from=builder /build/templates ./templates
 COPY setup/traccar.xml /opt/traccar/conf/traccar.xml
 
 # Expose ports
-# 10000 - Web UI and REST API (Render's default PORT)
+# 8082 - Web UI and REST API
 # 5000-5150 - Device protocols
-EXPOSE 10000 5000-5150
+EXPOSE 8082 5000-5150
 
 # Default environment variables (can be overridden at runtime)
 ENV CONFIG_USE_ENVIRONMENT_VARIABLES="true" \
     DATABASE_DRIVER="org.postgresql.Driver" \
-    DATABASE_URL="jdbc:postgresql://aws-0-us-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true" \
+    DATABASE_URL="jdbc:postgresql://aws-0-us-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true&prepareThreshold=0" \
     DATABASE_USER="postgres.xspkeynlexpiyjzzoyul" \
     DATABASE_PASSWORD="0b9r!hUz2&IZ" \
     OSMAND_PORT="5055" \
-    GPS103_PORT="5001" \
-    WEB_PORT="10000" \
-    WEB_ADDRESS="0.0.0.0"
+    GPS103_PORT="5001"
 
-# Health check (disabled for Render - they handle their own)
-# HEALTHCHECK --interval=2m --timeout=5s --start-period=60s --retries=3 \
-#     CMD wget -q --spider http://localhost:10000/api/health || exit 1
+# Health check
+HEALTHCHECK --interval=2m --timeout=5s --start-period=60s --retries=3 \
+    CMD wget -q --spider http://localhost:8082/api/health || exit 1
 
-# Run Traccar with reduced memory for faster startup
-ENTRYPOINT ["java", "-Xms512m", "-Xmx512m", "-jar", "tracker-server.jar", "conf/traccar.xml"]
-
+# Run Traccar
+ENTRYPOINT ["java", "-Xms1g", "-Xmx1g", "-jar", "tracker-server.jar", "conf/traccar.xml"]
