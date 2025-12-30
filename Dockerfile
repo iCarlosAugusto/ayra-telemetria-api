@@ -19,13 +19,25 @@ COPY templates ./templates
 # Build the application
 RUN ./gradlew assemble --no-daemon
 
+# Frontend build stage
+FROM node:20-alpine AS frontend
+
+WORKDIR /app
+
+# Copy frontend source
+COPY traccar-web/package*.json ./
+RUN npm ci --legacy-peer-deps
+
+COPY traccar-web/ ./
+RUN npm run build
+
 # Runtime stage - minimal image
 FROM eclipse-temurin:17-jre
 
 WORKDIR /opt/traccar
 
 # Create necessary directories
-RUN mkdir -p /opt/traccar/logs /opt/traccar/data
+RUN mkdir -p /opt/traccar/logs /opt/traccar/data /opt/traccar/web
 
 # Copy built artifacts from builder
 COPY --from=builder /build/target/tracker-server.jar ./tracker-server.jar
@@ -34,6 +46,9 @@ COPY --from=builder /build/target/lib ./lib
 # Copy configuration templates
 COPY --from=builder /build/schema ./schema
 COPY --from=builder /build/templates ./templates
+
+# Copy built frontend (vite.config.js: outDir: 'build')
+COPY --from=frontend /app/build ./web
 
 # Copy default configuration (can be overridden by environment variables)
 COPY setup/traccar.xml /opt/traccar/conf/traccar.xml

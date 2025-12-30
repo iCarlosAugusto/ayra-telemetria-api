@@ -20,7 +20,7 @@ services:
     environment:
       CONFIG_USE_ENVIRONMENT_VARIABLES: "true"
       DATABASE_DRIVER: org.postgresql.Driver
-      DATABASE_URL: jdbc:postgresql://aws-0-us-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true
+      DATABASE_URL: jdbc:postgresql://aws-0-us-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true&prepareThreshold=0
       DATABASE_USER: postgres.xspkeynlexpiyjzzoyul
       DATABASE_PASSWORD: "0b9r!hUz2&IZ"
       # Enable OsmAnd protocol for HTTP-based testing

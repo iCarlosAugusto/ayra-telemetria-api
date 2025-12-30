@@ -1,0 +1,24 @@
+meta {
+  name: Move GPS copy
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://ayra-telemetria-api-a-rpca.fly.dev:5055?id=123&lat=-23.2241&lon=-46.9801&timestamp=1454844584&speed=50
+  body: none
+  auth: inherit
+}
+
+params:query {
+  id: 123
+  lat: -23.2241
+  lon: -46.9801
+  timestamp: 1454844584
+  speed: 50
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}
