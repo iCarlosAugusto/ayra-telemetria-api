@@ -39,9 +39,9 @@ COPY --from=builder /build/templates ./templates
 COPY setup/traccar.xml /opt/traccar/conf/traccar.xml
 
 # Expose ports
-# 8082 - Web UI and REST API
+# 10000 - Web UI and REST API (Render's default PORT)
 # 5000-5150 - Device protocols
-EXPOSE 8082 5000-5150
+EXPOSE 10000 5000-5150
 
 # Default environment variables (can be overridden at runtime)
 ENV CONFIG_USE_ENVIRONMENT_VARIABLES="true" \
@@ -50,11 +50,12 @@ ENV CONFIG_USE_ENVIRONMENT_VARIABLES="true" \
     DATABASE_USER="postgres.xspkeynlexpiyjzzoyul" \
     DATABASE_PASSWORD="0b9r!hUz2&IZ" \
     OSMAND_PORT="5055" \
-    GPS103_PORT="5001"
+    GPS103_PORT="5001" \
+    WEB_PORT="10000"
 
 # Health check
 HEALTHCHECK --interval=2m --timeout=5s --start-period=60s --retries=3 \
-    CMD wget -q --spider http://localhost:8082/api/health || exit 1
+    CMD wget -q --spider http://localhost:10000/api/health || exit 1
 
 # Run Traccar
 ENTRYPOINT ["java", "-Xms1g", "-Xmx1g", "-jar", "tracker-server.jar", "conf/traccar.xml"]
