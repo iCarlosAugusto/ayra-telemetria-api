@@ -51,11 +51,13 @@ ENV CONFIG_USE_ENVIRONMENT_VARIABLES="true" \
     DATABASE_PASSWORD="0b9r!hUz2&IZ" \
     OSMAND_PORT="5055" \
     GPS103_PORT="5001" \
-    WEB_PORT="10000"
+    WEB_PORT="10000" \
+    WEB_ADDRESS="0.0.0.0"
 
-# Health check
-HEALTHCHECK --interval=2m --timeout=5s --start-period=60s --retries=3 \
-    CMD wget -q --spider http://localhost:10000/api/health || exit 1
+# Health check (disabled for Render - they handle their own)
+# HEALTHCHECK --interval=2m --timeout=5s --start-period=60s --retries=3 \
+#     CMD wget -q --spider http://localhost:10000/api/health || exit 1
 
-# Run Traccar
-ENTRYPOINT ["java", "-Xms1g", "-Xmx1g", "-jar", "tracker-server.jar", "conf/traccar.xml"]
+# Run Traccar with reduced memory for faster startup
+ENTRYPOINT ["java", "-Xms512m", "-Xmx512m", "-jar", "tracker-server.jar", "conf/traccar.xml"]
+
