@@ -59,17 +59,20 @@ COPY setup/traccar.xml /opt/traccar/conf/traccar.xml
 EXPOSE 8082 5000-5150
 
 # Default environment variables (can be overridden at runtime)
+# WEB_PORT uses Render's PORT env var, defaulting to 8082 for local development
 ENV CONFIG_USE_ENVIRONMENT_VARIABLES="true" \
     DATABASE_DRIVER="org.postgresql.Driver" \
     DATABASE_URL="jdbc:postgresql://aws-0-us-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true&prepareThreshold=0" \
     DATABASE_USER="postgres.xspkeynlexpiyjzzoyul" \
     DATABASE_PASSWORD="0b9r!hUz2&IZ" \
     OSMAND_PORT="5055" \
-    GPS103_PORT="5001"
+    GPS103_PORT="5001" \
+    WEB_PORT="8082"
 
-# Health check
+# Health check - uses WEB_PORT for dynamic port checking
 HEALTHCHECK --interval=2m --timeout=5s --start-period=60s --retries=3 \
-    CMD wget -q --spider http://localhost:8082/api/health || exit 1
+    CMD wget -q --spider http://localhost:${WEB_PORT:-8082}/api/health || exit 1
 
 # Run Traccar
-ENTRYPOINT ["java", "-Xms1g", "-Xmx1g", "-jar", "tracker-server.jar", "conf/traccar.xml"]
+# Use shell form to allow environment variable expansion for Render's PORT
+CMD WEB_PORT=${PORT:-8082} && exec java -Xms512m -Xmx512m -jar tracker-server.jar conf/traccar.xml
