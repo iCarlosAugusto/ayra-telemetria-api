@@ -26,7 +26,7 @@ WORKDIR /app
 
 # Copy frontend source
 COPY traccar-web/package*.json ./
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 COPY traccar-web/ ./
 RUN npm run build
